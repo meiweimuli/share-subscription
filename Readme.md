@@ -15,3 +15,5 @@ services:
       - SERVER_TOKEN=987654321
       - ALIYUN_REFRESH_TOKEN=abcabcabcabc
 ```
+
+![img](https://github.com/meiweimuli/share-subscription/blob/main/public/dist/assets/WeCom20240408-121910.png)
