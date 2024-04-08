@@ -1,0 +1,1 @@
+export const { ref, watch, computed, onMounted, createApp, nextTick } = window.Vue

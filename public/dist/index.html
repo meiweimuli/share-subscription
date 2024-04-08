@@ -1,0 +1,45 @@
+<html lang="zh">
+
+<head>
+  <title>订阅管理</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <link rel="stylesheet" href="./assets/css/reset.css">
+  <link rel="stylesheet" href="//unpkg.com/element-plus/dist/index.css">
+
+  <script src="//unpkg.com/vue@3.4.21/dist/vue.global.prod.js"></script>
+  <script src="//unpkg.com/vue-router@4.0.15/dist/vue-router.global.prod.js"></script>
+  <script src="//unpkg.com/element-plus@2.6.3/dist/index.full.min.js"></script>
+
+  <script src="//unpkg.com/dayjs@1.11.10/dayjs.min.js"></script>
+  <script src="//unpkg.com/dayjs@1.11.10/plugin/utc.js"></script>
+  <script src="//unpkg.com/dayjs@1.11.10/plugin/timezone.js"></script>
+  <script src="//unpkg.com/filesize@10.1.1/dist/filesize.min.js"></script>
+  <script src="//unpkg.com/axios@1.6.8/dist/axios.min.js"></script>
+
+
+  <!--  <script src="//unpkg.com/vue@3.4.21/dist/vue.global.js"></script>-->
+  <!--  <script src="//unpkg.com/vue-router@4.0.15/dist/vue-router.global.js"></script>-->
+  <!--  <script src="//unpkg.com/element-plus@2.6.3/dist/index.full.js"></script>-->
+</head>
+
+<body>
+<div id="app">
+</div>
+<script type="module">
+
+  import { router } from './src/router/router.js'
+  import { createApp } from './src/import/vue.js'
+  import App from './src/App.js'
+
+  dayjs.extend(dayjs_plugin_utc)
+  dayjs.extend(dayjs_plugin_timezone)
+
+  const app = createApp(App)
+  app.use(router)
+  app.use(window.ElementPlus)
+  app.mount('#app')
+</script>
+</body>
+
+</html>
