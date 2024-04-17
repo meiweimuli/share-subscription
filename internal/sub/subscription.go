@@ -93,7 +93,7 @@ func ExecSub(subscription *model.Subscription) error {
 	}
 	err = shareInfo.Init()
 	if err != nil {
-		if errors.Is(err, share.ErrShareInvalid) || errors.Is(err, share.ErrFolderInvalid) {
+		if errors.Is(err, share.ErrShareInvalid) || errors.Is(err, share.ErrFolderInvalid) || errors.Is(err, share.ErrShareCanceled) {
 			subscription.ShareUrlInvalid = true
 			subscription.Disabled = true
 			_ = db.UpdateSubscription(subscription)

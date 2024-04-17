@@ -4,9 +4,10 @@ import { ref, computed, watch } from '../../import/vue.js'
 
 import { ElMessage } from '../../import/element.js'
 import SeasonDialog from './SeasonDialog.js'
+import SearchDialog from '../../components/SearchDialog.js'
 
 export default {
-  components: { SeasonDialog },
+  components: { SeasonDialog, SearchDialog },
   setup() {
 
     const tvList = ref([])
@@ -89,6 +90,8 @@ export default {
       showSeasonDialog.value = true
     }
 
+    const showSearchDialog = ref(false)
+
     return {
       tvList,
       query,
@@ -109,10 +112,14 @@ export default {
 
       currentSeasonNumber,
       showSeasonDialog,
-      openSeasonDialog
+      openSeasonDialog,
+
+      showSearchDialog
     }
   },
   template: `
+<SearchDialog v-model="showSearchDialog" />
+<ElButton @click="showSearchDialog = true">搜索</ElButton>
 <SeasonDialog v-model="showSeasonDialog" :seriesId="tvDetail.id" :seasonNumber="currentSeasonNumber" />
   <ElCard>
     <div>

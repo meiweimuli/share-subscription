@@ -105,7 +105,7 @@ func execSaveShare(req ShareSaveReq) error {
 	}
 	err := shareInfo.Init()
 	if err != nil {
-		if errors.Is(err, share.ErrShareInvalid) || errors.Is(err, share.ErrFolderInvalid) {
+		if errors.Is(err, share.ErrShareInvalid) || errors.Is(err, share.ErrFolderInvalid) || errors.Is(err, share.ErrShareCanceled) {
 			return errors.Wrapf(err, "分享链接无效: %s", req.ShareUrl)
 		}
 		return errors.Wrap(err, "分享信息获取失败")

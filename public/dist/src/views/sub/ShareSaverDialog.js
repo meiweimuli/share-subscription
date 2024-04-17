@@ -1,7 +1,7 @@
 import { client } from '../../utils/client.js'
 import { formatTime } from '../../utils/time.js'
 import { FolderSelect } from '../../components/FolderSelect.js'
-import { ref, watch, nextTick } from '../../import/vue.js'
+import { nextTick, ref, watch } from '../../import/vue.js'
 import { ElMessage } from '../../import/element.js'
 
 export const ShareSaverDialog = {
@@ -163,7 +163,8 @@ export const ShareSaverDialog = {
         {{ row.name }}
       </template>
     </ElTableColumn>
-    <ElTableColumn label="保存名称" prop="replaceName" sortable :sort-method="(a, b) => a.replaceName.localeCompare(b.replaceName, 'zh-Hans-CN')"></ElTableColumn>
+    <ElTableColumn label="保存名称" prop="replaceName" sortable
+                   :sort-method="(a, b) => a.replaceName.localeCompare(b.replaceName, 'zh-Hans-CN')"></ElTableColumn>
     <ElTableColumn label="创建时间" sortable sort-by="created" width="200">
       <template #default="{row}">
         {{ formatTime(row.created) }}
@@ -171,18 +172,18 @@ export const ShareSaverDialog = {
     </ElTableColumn>
   </ElTable>
   <template #footer>
-            <span class="dialog-footer">
-              <ElButton @click="model = false">取消</ElButton>
-              <ElButton v-if="!previewing" type="primary" @click="toPreview">
-                下一步
-              </ElButton>
-              <ElButton v-if="previewing" type="primary" @click="previewing = false">
-                上一步
-              </ElButton>
-                            <ElButton v-if="previewing" type="primary" @click="doSave">
-                              保存
-                            </ElButton>
-            </span>
+    <span class="dialog-footer">
+      <ElButton @click="model = false">取消</ElButton>
+      <ElButton v-if="!previewing" type="primary" @click="toPreview">
+        下一步
+        </ElButton>
+      <ElButton v-if="previewing" type="primary" @click="previewing = false">
+        上一步
+      </ElButton>
+      <ElButton v-if="previewing" type="primary" @click="doSave">
+        保存
+      </ElButton>
+    </span>
   </template>
 </ElDialog>`
 }

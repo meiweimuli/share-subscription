@@ -8,8 +8,9 @@ import { SettingDialog } from '../../components/SettingDialog.js'
 import { style } from '../../utils/style.js'
 import { filesize } from '../../utils/filesize.js'
 
-import { computed, ref, watch, onMounted, nextTick } from '../../import/vue.js'
+import { computed, ref, watch, onMounted, nextTick, inject } from '../../import/vue.js'
 import { ElMessage } from '../../import/element.js'
+import SearchDialog from '../../components/SearchDialog.js'
 
 style(`
 .match-file {
@@ -22,7 +23,7 @@ style(`
 `)
 
 export default {
-  components: { FolderSelect, ShareSaverDialog, SubLogDialog, SettingDialog },
+  components: { FolderSelect, ShareSaverDialog, SubLogDialog, SettingDialog, SearchDialog },
   setup() {
 
     //列表
@@ -195,8 +196,8 @@ export default {
     const showShareSaverDialog = ref(false)
     //记录
     const showSubLogDialog = ref(false)
-    //配置token
-    const showSettingDialog = ref(false)
+
+    const { openSearchDialog } = inject('openSearchDialog')
 
     return {
       loading,
@@ -225,31 +226,30 @@ export default {
 
       showShareSaverDialog,
       showSubLogDialog,
+      openSearchDialog,
 
       formatTime
     }
   },
-  template: `
-
-<ElCard>
-<ElForm :inline="true">
-  <ElFormItem>
-    <ElButton type="primary" @click="loadSubscriptionList">
-      刷新
-    </ElButton>
-    <ElButton type="primary" @click="toAdd">
-      新增
-    </ElButton>
-    <ElButton type="primary" @click="showShareSaverDialog = true">
-      分享保存
-    </ElButton>
-    <ElButton type="primary" @click="showSubLogDialog = true">
-      记录
-    </ElButton>
-  </ElFormItem>
-</ElForm>
+  template: `<ElCard>
+  <ElForm :inline="true">
+    <ElFormItem>
+      <ElButton type="primary" @click="loadSubscriptionList">
+        刷新
+      </ElButton>
+      <ElButton type="primary" @click="toAdd">
+        新增
+      </ElButton>
+      <ElButton type="primary" @click="showShareSaverDialog = true">
+        分享保存
+      </ElButton>
+      <ElButton type="primary" @click="showSubLogDialog = true">
+        记录
+      </ElButton>
+    </ElFormItem>
+  </ElForm>
   <ElTable :data="subscriptionList" v-loading="loading" style="width: 100%"
-            :row-class-name="(data) => data.row.share_url_invalid ? 'share_url_invalid' : ''">
+           :row-class-name="(data) => data.row.share_url_invalid ? 'share_url_invalid' : ''">
     <ElTableColumn label="名称" sortable sort-by="name" min-width="100">
       <template #default="{row}">
         {{ row.name }}
@@ -263,7 +263,7 @@ export default {
     <ElTableColumn label="是否启用" sortable sort-by="disabled" width="150">
       <template #default="{row}">
         <ElSwitch v-model="row.disabled" @change="v => changeDisabled(row,v)"
-                   style="--el-switch-on-color:#ff4949; --el-switch-off-color:#13ce66"></ElSwitch>
+                  style="--el-switch-on-color:#ff4949; --el-switch-off-color:#13ce66"></ElSwitch>
       </template>
     </ElTableColumn>
     <ElTableColumn fixed="right" label="操作">
@@ -292,18 +292,18 @@ export default {
 <ElDialog v-model="editing" :title="editingSubscription?.id ? '修改' : '新增'" @close="editingSubscription = {}">
   <ElForm :model="editingSubscription" ref="saveFormRef" label-width="120px">
     <ElFormItem label="标题" prop="name"
-                  :rules="[{required: true, message: '标题不能为空', trigger: 'change'}]">
+                :rules="[{required: true, message: '标题不能为空', trigger: 'change'}]">
       <ElInput v-model="editingSubscription.name"></ElInput>
     </ElFormItem>
     <ElFormItem label="分享链接" prop="share_url"
-                  :rules="[{required: true, message: '分享链接不能为空', trigger: 'change'}]">
+                :rules="[{required: true, message: '分享链接不能为空', trigger: 'change'}]">
       <ElInput v-model="editingSubscription.share_url"></ElInput>
     </ElFormItem>
     <ElFormItem label="分享密码" prop="share_secret">
       <ElInput v-model="editingSubscription.share_secret"></ElInput>
     </ElFormItem>
     <ElFormItem label="保存目录" prop="target_folder_id"
-                  :rules="[{required: true, message: '保存目录不能为空', trigger: 'change'}]">
+                :rules="[{required: true, message: '保存目录不能为空', trigger: 'change'}]">
       <folder-select v-model="editingSubscription.target_folder_id"></folder-select>
     </ElFormItem>
     <ElFormItem label="筛选正则" prop="match_regex">
@@ -320,25 +320,26 @@ export default {
     </ElFormItem>
   </ElForm>
   <template #footer>
-            <span class="dialog-footer">
-              <ElButton @click="editing = false">取消</ElButton>
-              <ElButton type="primary" @click="doSave">
-                保存
-              </ElButton>
-            </span>
+    <span class="dialog-footer">
+    <ElButton @click="openSearchDialog">搜索</ElButton>
+      <ElButton @click="editing = false">取消</ElButton>
+      <ElButton type="primary" @click="doSave">
+        保存
+      </ElButton>
+    </span>
   </template>
 </ElDialog>
-
 <ElDialog v-model="previewing" title="文件预览" width="95%">
   <ElTable :data="shareFiles" @selection-change="handleSelectionChange"
-            :row-class-name="(data) => data.row.match ? 'match-file' : ''" ref="previewTable">
+           :row-class-name="(data) => data.row.match ? 'match-file' : ''" ref="previewTable">
     <ElTableColumn type="selection" width="55"></ElTableColumn>
     <ElTableColumn label="名称" sortable :sort-method="(a, b) => a.name.localeCompare(b.name, 'zh-Hans-CN')">
       <template #default="{row}">
         {{ row.name }}
       </template>
     </ElTableColumn>
-    <ElTableColumn label="保存名称" prop="replaceName" sortable :sort-method="(a, b) => a.replaceName.localeCompare(b.replaceName, 'zh-Hans-CN')"></ElTableColumn>
+    <ElTableColumn label="保存名称" prop="replaceName" sortable
+                   :sort-method="(a, b) => a.replaceName.localeCompare(b.replaceName, 'zh-Hans-CN')"></ElTableColumn>
     <ElTableColumn label="创建时间" sortable sort-by="created" width="200">
       <template #default="{row}">
         {{ formatTime(row.created) }}
@@ -347,16 +348,16 @@ export default {
     <ElTableColumn label="大小" prop="readableSize" sortable sort-by="size" width="200"></ElTableColumn>
   </ElTable>
   <template #footer>
-            <span class="dialog-footer">
-              <ElButton @click="previewing = false">取消</ElButton>
-              <ElButton type="primary" @click="saveSavedFiles">
-                保存
-              </ElButton>
-            </span>
+    <span class="dialog-footer">
+    
+      <ElButton @click="previewing = false">取消</ElButton>
+      <ElButton type="primary" @click="saveSavedFiles">
+        保存
+      </ElButton>
+    </span>
   </template>
 </ElDialog>
 <ShareSaverDialog v-model="showShareSaverDialog"></ShareSaverDialog>
 <SubLogDialog v-model="showSubLogDialog"></SubLogDialog>
-
 `
 }

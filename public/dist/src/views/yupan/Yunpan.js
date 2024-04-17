@@ -39,6 +39,10 @@ margin-bottom: 150px;
     bottom: 20px;
     z-index: 100;
 }
+
+div:has(>.el-popper>.el-popconfirm){
+    position: relative;
+}
 `)
 
 export default {
@@ -262,13 +266,13 @@ export default {
   <ElButton @click="openBatchRenameDialog">重命名</ElButton>
   <ElButton @click="openMoveDialog">移动</ElButton>
   <ElButton @click="openCopyDialog">复制</ElButton>
-  <ElPopconfirm title="确定删除?" @confirm.prevent="doDelete()">
+  <el-popconfirm title="确定删除?" @confirm.prevent="doDelete()" :popper-options="{ boundariesElement: 'viewport', removeOnDestroy: true }" class="delete-pop">
     <template #reference>
-      <el-button type="warning">
+      <el-button type="warning" @click="">
         删除
       </el-button>
     </template>
-  </ElPopconfirm>
+  </el-popconfirm>
 </ElCard>
 
 <ElCard class="yunpan-table-card">

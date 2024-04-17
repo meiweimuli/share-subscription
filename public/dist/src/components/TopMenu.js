@@ -1,7 +1,8 @@
-import { ref } from '../import/vue.js'
+import { ref, inject } from '../import/vue.js'
 import { style } from '../utils/style.js'
 import { SettingDialog } from './SettingDialog.js'
 import { useRoute } from '../import/vue-router.js'
+
 
 style(`
 .setting-button{
@@ -23,10 +24,13 @@ export default {
 
     const showSettingDialog = ref(false)
 
+    const { openSearchDialog } = inject('openSearchDialog')
+
     return {
       activeIndex,
       handleSelect,
 
+      openSearchDialog,
       showSettingDialog
     }
   },
@@ -40,8 +44,7 @@ export default {
   >
     <ElMenuItem index="/yp">阿里云盘</ElMenuItem>
     <ElMenuItem index="/sub">分享订阅</ElMenuItem>
-    <ElMenuItem index="/movie">电影搜索</ElMenuItem>
-    <ElMenuItem index="/tv">节目搜索</ElMenuItem>
+    <ElButton class="setting-button" @click="openSearchDialog">搜索</ElButton>
     <ElButton class="setting-button" @click="showSettingDialog = true">配置</ElButton>
   </ElMenu>
 <SettingDialog v-model="showSettingDialog" />

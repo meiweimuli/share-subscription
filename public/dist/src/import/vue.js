@@ -1,1 +1,1 @@
-export const { ref, watch, computed, onMounted, createApp, nextTick } = window.Vue
+export const { ref, watch, computed, onMounted, createApp, nextTick, provide, inject } = window.Vue

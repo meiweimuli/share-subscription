@@ -6,6 +6,7 @@ import { ElMessage } from '../../import/element.js'
 export default {
   setup() {
 
+
     const movieList = ref([])
 
     const query = ref('')
@@ -111,6 +112,7 @@ export default {
   <ElCard>
     <div>
       <!-- <ElFormItem label="ApiKey"> <ElInput v-model="apiKey"></ElInput></ElFormItem> -->
+     
       <ElFormItem label="文本查询">
         <ElInput v-model="query" @keyup.enter.native="doQuery"></ElInput>
       </ElFormItem>

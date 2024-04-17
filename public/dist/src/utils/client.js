@@ -1,7 +1,6 @@
 import { ElMessage } from '../import/element.js'
 
 const baseUrl = '/'
-// const baseUrl = 'http://127.0.0.1:9999/'
 export const client = axios.create({
   baseURL: baseUrl, timeout: 20000
 })
@@ -37,7 +36,7 @@ export const tmdbClient = axios.create({
 
 tmdbClient.interceptors.request.use((config) => {
   const tmdbApiKey = localStorage.getItem('tmdb_token')
-  config.params = Object.assign({ 'api_key': tmdbApiKey }, config.params)
+  config.params = Object.assign({ 'api_key': tmdbApiKey, 'language': 'zh-CN' }, config.params)
   return config
 }, function(error) {
   return Promise.reject(error)

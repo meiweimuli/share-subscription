@@ -7,9 +7,7 @@ import Tv from '../views/tv/Tv.js'
 const routes = [
   { path: '/', redirect: '/yp' },
   { path: '/yp/:id?', component: Yunpan },
-  { path: '/sub', component: Sub },
-  { path: '/movie', component: Movie },
-  { path: '/tv', component: Tv }
+  { path: '/sub', component: Sub }
 ]
 
 export const router = createRouter({

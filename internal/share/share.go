@@ -9,6 +9,7 @@ import (
 
 var (
 	ErrShareInvalid  = errors.New("invalid share")
+	ErrShareCanceled = errors.New("invalid share")
 	ErrFolderInvalid = errors.New("invalid folder")
 )
 
@@ -100,6 +101,9 @@ func (s *Share) GetShareInfo() (*Info, error) {
 		if e.Code == "NotFound.ShareLink" {
 			return nil, ErrShareInvalid
 		}
+		if e.Code == "ShareLink.Cancelled" {
+			return nil, ErrShareCanceled
+		}
 		if e.Code == "ShareLinkTokenInvalid" {
 			err = s.getShareToken()
 			if err != nil {
@@ -107,7 +111,7 @@ func (s *Share) GetShareInfo() (*Info, error) {
 			}
 			return s.GetShareInfo()
 		}
-		return nil, errors.New(e.Message)
+		return nil, errors.New(e.Code + " - " + e.Message)
 	}
 	return resp, nil
 }
@@ -143,7 +147,7 @@ func (s *Share) GetFolderInfo() (*File, error) {
 			}
 			return s.GetFolderInfo()
 		}
-		return nil, errors.New(e.Message)
+		return nil, errors.New(e.Code + " - " + e.Message)
 	}
 	return resp, nil
 }
@@ -192,7 +196,7 @@ func (s *Share) GetFiles() ([]File, error) {
 				}
 				return s.GetFiles()
 			}
-			return nil, errors.New(e.Message)
+			return nil, errors.New(e.Code + " - " + e.Message)
 		}
 		data["marker"] = resp.NextMarker
 		files = append(files, resp.Items...)
